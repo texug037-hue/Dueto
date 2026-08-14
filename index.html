@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dueto — contas a dois</title>
+<meta name="theme-color" content="#12151C">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-32.png">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-topbar">
+      <button id="btnInstall">⬇ Baixar app</button>
+      <button id="btnBackupLogin">💾 Backup</button>
+    </div>
+    <div class="login-mid">
+      <img src="./icon-192.png" alt="Dueto" class="login-icon">
+      <div class="login-logo">Dueto</div>
+      <div class="login-tag">contas a dois, visão única</div>
+
+      <div id="stepPhone">
+        <div class="login-field-label">Número de celular</div>
+        <div class="login-input-wrap">
+          <span class="ddi">+55</span>
+          <input type="tel" id="loginPhone" placeholder="(19) 99771-1319" maxlength="16">
+        </div>
+        <div class="login-field-label">Senha</div>
+        <div class="login-input-wrap">
+          <input type="password" id="loginPassword" placeholder="Senha">
+        </div>
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="btnSendCode">Entrar</button>
+      </div>
+    </div>
+    <div class="login-footer">Produzido por <b>Fabrício</b> · <span id="appVersion">v1.0</span></div>
+  </div>
+
+  <div class="app" id="appRoot" style="display:none;">
+
+    <header>
+      <div class="brand-row">
+        <div class="brand">Dueto</div>
+        <button class="theme-toggle" id="themeToggleBtn">
+          <span class="toggle-track" id="toggleTrack"><span class="toggle-thumb"></span></span>
+        </button>
+      </div>
+      <div class="totais-ovais">
+        <div class="oval venc"><span class="num" id="totalVencidas">R$ 0</span><span class="lbl">Vencidas</span></div>
+        <div class="oval hoje"><span class="num" id="totalHoje">R$ 0</span><span class="lbl">Vence hoje</span></div>
+        <div class="oval"><span class="num" id="totalMes">R$ 0</span><span class="lbl">Mês</span></div>
+      </div>
+    </header>
+
+    <div class="body-layout">
+      <nav class="sidebar">
+        <button class="active" data-filter="todas">Todos</button>
+        <button data-filter="cartao">
+          <svg class="cat-ico purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          Cartões
+        </button>
+        <button data-filter="agua">
+          <svg class="cat-ico blue" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 2 5 11 5 15.5C5 19.6 8.13 22 12 22C15.87 22 19 19.6 19 15.5C19 11 12 2 12 2Z"/></svg>
+          Água
+        </button>
+        <button data-filter="forca">
+          <svg class="cat-ico orange" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+          Força
+        </button>
+        <button data-filter="geral">
+          <svg class="cat-ico green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M2 3h2l2.4 12.2a2 2 0 0 0 2 1.8h8.6a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+          Desp. Gerais
+        </button>
+        <button data-filter="historico">
+          <svg class="cat-ico gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Histórico
+        </button>
+      </nav>
+
+      <div class="content-area">
+        <div class="content-title-row">
+          <div class="content-title" id="contentTitle">Todas as contas</div>
+          <button class="quick-add" id="quickAddBtn">+</button>
+        </div>
+        <div id="list"><div class="empty-state">Carregando suas contas...</div></div>
+      </div>
+    </div>
+
+    <button class="fab" id="fabAdd">+</button>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sheetTitle">Nova conta</div>
+
+    <div class="field-label">Categoria</div>
+    <div class="seg" id="segCat">
+      <button data-cat="cartao">Cartão</button>
+      <button data-cat="agua">Água</button>
+      <button data-cat="forca">Força</button>
+      <button data-cat="geral">Geral</button>
+    </div>
+
+    <div id="nomeField">
+      <div class="field-label">Nome</div>
+      <input type="text" id="f-nome" placeholder="Ex: Cartão Nubank, Mercado...">
+    </div>
+
+    <div class="field-label">Valor total (R$)</div>
+    <input type="number" step="0.01" id="f-valor" placeholder="0,00">
+
+    <div id="cartaoFields">
+      <div class="field-label">Valor mínimo (R$)</div>
+      <input type="number" step="0.01" id="f-min" placeholder="0,00">
+      <div class="field-label">Parcelas depois da entrada?</div>
+      <input type="number" min="1" id="f-numParcelas" placeholder="Ex: 3 (deixe vazio se não for parcelado)">
+      <div class="field-label">Valor de cada parcela (R$)</div>
+      <input type="number" step="0.01" id="f-valorParcela" placeholder="calculado automaticamente">
+    </div>
+
+    <div class="field-label">Vencimento</div>
+    <input type="date" id="f-venc">
+
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="btnCancelSheet">Cancelar</button>
+      <button class="btn-save" id="btnSaveSheet">Salvar</button>
+    </div>
+  </div>
+
+  <input type="file" id="receiptInput" accept="image/*,.pdf" class="hide">
+
+  <div class="overlay" id="histOverlay"></div>
+  <div class="sheet" id="histSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="histTitle">Conta paga</div>
+    <div id="histDetailBody"></div>
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="btnCloseHist">Fechar</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="viewerOverlay"></div>
+  <div class="receipt-viewer" id="receiptViewer">
+    <div class="viewer-top">
+      <span id="viewerName">comprovante</span>
+      <button id="btnCloseViewer">✕</button>
+    </div>
+    <div class="viewer-body" id="viewerBody"></div>
+    <div class="viewer-actions">
+      <button id="btnViewNewTab">Abrir</button>
+      <button id="btnDownloadReceipt">⬇ Baixar</button>
+    </div>
+  </div>
+
+  <script type="module" src="./app.v6.js"></script>
+</body>
+</html>
